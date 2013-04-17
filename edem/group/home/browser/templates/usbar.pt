@@ -32,7 +32,8 @@
     </ul><!--us-anon-tasks-->
     <ul id="us-non-member-tasks"
       tal:condition="python:not(view.isMember or view.userInfo.anonymous)">
-      <li style="list-style-type: none !important;"><a tal:attributes="href string:${view/groupInfo/relativeURL}/join.html?rb=${view/referredBy}" style="padding: 10pt; font-size: 18pt" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Join Forum</a></li>
+      <li style="list-style-type: none !important;" tal:condition="python:view.isPublic"><a tal:attributes="href string:${view/groupInfo/relativeURL}/join.html?rb=${view/referredBy}" style="padding: 10pt; font-size: 18pt" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Join Forum</a></li>
+      <li style="list-style-type: none !important;" tal:condition="python:view.isPrivate"><a tal:attributes="href string:${view/groupInfo/relativeURL}/request.html?rb=${view/referredBy}" style="padding: 10pt; font-size: 18pt" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Request to Join Forum</a></li>
     </ul><!--us-non-member-tasks-->
   </div><!--us-tasks-->
 </div><!--us-bar-->
