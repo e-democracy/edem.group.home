@@ -16,7 +16,7 @@ import random
 USBARLIMIT = 5
 
 class UsBar(GroupContentProvider):
-    pageTemplateFileName = "templates/usbar.pt"
+    pageTemplateFileName = "browser/templates/usbar.pt"
 
     def __init__(self, context, request, view):
         global USBARLIMIT
