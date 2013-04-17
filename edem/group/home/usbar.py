@@ -2,6 +2,7 @@
 from zope.component import createObject
 from zope.contentprovider.interfaces import UpdateNotCalled
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.cachedescriptors.property import Lazy
 from gs.group.member.list.queries import MembersQuery
 from gs.group.base.contentprovider import GroupContentProvider
 from gs.group.base.interfaces import IGSGroupMarker
