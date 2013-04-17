@@ -3,12 +3,12 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five">
 
-    
-  <browser:page name="gs-group-topics-ajax.html"
-    for="gs.group.base.interfaces.IGSGroupMarker"
-    template="browser/templates/ajax.pt"
-    class=".ajax.TopicsAjax"
-    layer="gs.skin.ogn.edem.interfaces.IEDemLayer"
-    permission="zope2.View"/>
+  <adapter
+    for="zope.interface.Interface
+         gs.skin.ogn.edem.interfaces.IEDemLayer
+         zope.interface.Interface"
+    factory=".usbar.UsBar"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    name="groupserver.UsBar"/>
 </configure>
 
