@@ -1,0 +1,3 @@
+<p tal:replace="structure provider:groupserver.UsBar">
+ The Us Bar
+</p>

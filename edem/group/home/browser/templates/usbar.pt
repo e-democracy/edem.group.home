@@ -1,0 +1,39 @@
+<div id="us-bar" class="ui-widget-content ui-corner-all">
+  <ul id="us-photos" class="inline-list">
+    <tal:block repeat="member view/usBarMembers">
+      <li>
+        <a tal:attributes="title string:Posts by ${member/name};
+          href string:/s?t=0&amp;p=1&amp;a=${member/id}&amp;g=${view/groupInfo/id}">
+          <div tal:define="user member/user"
+            tal:replace="structure provider:groupserver.UserImage"/>
+        </a>
+      </li>
+    </tal:block>
+  </ul>
+  <div id="us-tasks">
+    <ul id="us-member-tasks" tal:condition="view/isMember">
+      <li>
+        You are a <strong>member.</strong> You can 
+        <a href="#"
+          tal:attributes="href string:/groups/leave.html?groupId=${view/groupInfo/id}">leave</a>.</li>
+    </ul><!--us-member-tasks-->
+    <ul id="us-anon-tasks" tal:condition="view/userInfo/anonymous">
+      <li tal:condition="not:view/viewTopics">Already a member?
+        <a tal:attributes="href string:${view/groupInfo/url}/login.html?came_from=${view/groupInfo/url}&rb=${view/referredBy}"
+            href="#"><strong>Log in!<strong></a></li>
+      <li style="list-style-type: none !important;" tal:condition="view/viewTopics">
+        	<a style="padding: 10pt; font-size: 18pt" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all"
+        	  tal:attributes="href string:/request_registration.html?form.groupId=${view/groupInfo/id}&rb=${view/referredBy}"
+        	  href="#"><strong>Join Forum</strong></a>
+        (Already a member?
+        <a tal:attributes="href string:${view/groupInfo/url}/login.html?came_from=${request/URL}&rb=${view/referredBy}"
+          href="#"><strong>Log in!<strong></a>)
+      </li>
+    </ul><!--us-anon-tasks-->
+    <ul id="us-non-member-tasks"
+      tal:condition="python:not(view.isMember or view.userInfo.anonymous)">
+      <li style="list-style-type: none !important;"><a tal:attributes="href string:${view/groupInfo/relativeURL}/join.html?rb=${view/referredBy}" style="padding: 10pt; font-size: 18pt" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Join Forum</a></li>
+    </ul><!--us-non-member-tasks-->
+  </div><!--us-tasks-->
+</div><!--us-bar-->
+
