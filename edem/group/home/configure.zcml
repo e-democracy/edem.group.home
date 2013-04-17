@@ -10,5 +10,16 @@
     factory=".usbar.UsBar"
     provides="zope.contentprovider.interfaces.IContentProvider"
     name="groupserver.UsBar"/>
+
+  <!-- Putting the Us Bar into Topic Display pages -->
+  <browser:viewlet name="gs-group-topics-usBar"
+    manager="gs.group.messages.topic.interfaces.ITopicPage"
+    template="browser/templates/usbar-viewlet.pt"
+    class="gs.group.base.GroupViewlet"
+    permission="zope2.View"
+    weight="70"
+    title="Join Us"
+    layer="gs.skin.ogn.edem.interfaces.IEDemLayer" />
+
 </configure>
 
