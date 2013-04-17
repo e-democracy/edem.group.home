@@ -34,6 +34,12 @@ setup(name='edem.group.home',
         'setuptools',
         'gs.skin.ogn.edem',
         'gs.group.home',
+        'gs.group.base',
+        'gs.group.member.list',
+        'gs.group.messages.topic',
+        'gs.viewlet',
+        'Products.CustomUserFolder',
+        'Products.GSGroupMember',
         # -*- Extra requirements: -*-
     ],
     entry_points="""
