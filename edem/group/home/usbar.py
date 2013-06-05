@@ -1,9 +1,9 @@
 # coding=utf-8
+import random
 from zope.component import createObject
 from zope.contentprovider.interfaces import UpdateNotCalled
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from gs.group.member.list.queries import MembersQuery
 from gs.group.base.contentprovider import GroupContentProvider
 from gs.group.base.interfaces import IGSGroupMarker
 from gs.group.base.page import GroupPage
@@ -12,29 +12,26 @@ from gs.viewlet import SiteContentProvider, WeightOrderedViewletManager
 from Products.CustomUserFolder.CustomUser import user_image_path
 from Products.GSGroupMember.groupmembership import get_group_userids,\
                                                     user_member_of_group
-import random
 
 USBARLIMIT = 5
+
 
 class UsBar(GroupContentProvider):
     pageTemplateFileName = "browser/templates/usbar.pt"
 
-    def __init__(self, context, request, view):
+    def __init__(self, group, request, view):
         global USBARLIMIT
-        GroupContentProvider.__init__(self, context, request, view)
+        super(UsBar, self).__init__(group, request, view)
         self.__updated = False
-        self.__isMember = self.__userInfo = None
         if self.referredBy == 'topic-us-bar':
             USBARLIMIT = 3
 
     # TODO: Move self.userInfo and self.isMember to a base
     #   gs.group.member.base.GroupMemberContentProvider class
-    @property
+    @Lazy
     def userInfo(self):
-        if self.__userInfo == None:
-            self.__userInfo = createObject('groupserver.LoggedInUser', 
-                                            self.context)
-        return self.__userInfo
+        retval = createObject('groupserver.LoggedInUser', self.context)
+        return retval
 
     @property
     def referredBy(self):
@@ -47,7 +44,7 @@ class UsBar(GroupContentProvider):
             parent = parent.__parent__
         if parent.__class__.__name__ == 'GSTopicView':
             # wbushey: I really wanted to do this check by isinstance, but
-            # at the moment my head hurts too much to figure out 
+            # at the moment my head hurts too much to figure out
             # Products.Five.metaclass
             page = "topic-"
         elif isinstance(parent, GroupPage):
@@ -56,12 +53,10 @@ class UsBar(GroupContentProvider):
             page = "grouphome-"
         return "%sus-bar" % page
 
-    @property
+    @Lazy
     def isMember(self):
-        if self.__isMember == None:
-            self.__isMember = user_member_of_group(self.userInfo, 
-                                                    self.context)
-        return self.__isMember
+        retval = user_member_of_group(self.userInfo, self.context)
+        return retval
 
     @Lazy
     def isPrivate(self):
@@ -70,30 +65,29 @@ class UsBar(GroupContentProvider):
         vis = IGSGroupVisibility(self.groupInfo)
         return vis.isPrivate
 
-
     @Lazy
     def isPublic(self):
         ''' Indicates if the group the UsBar is being displayed in is Public'''
         vis = IGSGroupVisibility(self.groupInfo)
         return vis.isPublic
-        
+
     def update(self):
         self.__updated = True
-        
+
         self.usBarMembers = []
         if self.viewTopics:
             ctx = self.context
             site_root = ctx.site_root()
-            
-            # get_group_userids requires a group context 
+
+            # get_group_userids requires a group context
             while not IGSGroupMarker.providedBy(ctx) and ctx != site_root:
                 ctx = ctx.aq_parent
             if not IGSGroupMarker.providedBy(ctx):
-                raise LookupError('Group context can not be found.') 
+                raise LookupError('Group context can not be found.')
 
             ml = list(get_group_userids(ctx, ctx.getId()))
             random.shuffle(ml)
-            
+
             for userId in ml:
                 if user_image_path(ctx, userId):
                     user = createObject('groupserver.UserFromId', ctx,
@@ -108,4 +102,3 @@ class UsBar(GroupContentProvider):
 
         pageTemplate = ViewPageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(self)
-
