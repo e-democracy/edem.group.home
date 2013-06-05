@@ -1,17 +1,16 @@
 # coding=utf-8
 import random
-from zope.component import createObject
-from zope.contentprovider.interfaces import UpdateNotCalled
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from gs.group.base.contentprovider import GroupContentProvider
+from zope.component import createObject
+from zope.contentprovider.interfaces import UpdateNotCalled
+from gs.group.base import GroupContentProvider, GroupPage
 from gs.group.base.interfaces import IGSGroupMarker
-from gs.group.base.page import GroupPage
+from gs.group.member.base import user_member_of_group
 from gs.group.privacy.interfaces import IGSGroupVisibility
 from gs.viewlet import SiteContentProvider, WeightOrderedViewletManager
 from Products.CustomUserFolder.CustomUser import user_image_path
-from Products.GSGroupMember.groupmembership import get_group_userids,\
-                                                    user_member_of_group
+from Products.GSGroupMember.groupmembership import get_group_userids
 
 USBARLIMIT = 5
 
@@ -26,11 +25,9 @@ class UsBar(GroupContentProvider):
         if self.referredBy == 'topic-us-bar':
             USBARLIMIT = 3
 
-    # TODO: Move self.userInfo and self.isMember to a base
-    #   gs.group.member.base.GroupMemberContentProvider class
     @Lazy
     def userInfo(self):
-        retval = createObject('groupserver.LoggedInUser', self.context)
+        retval = self.loggedInUser
         return retval
 
     @property
@@ -53,23 +50,31 @@ class UsBar(GroupContentProvider):
             page = "grouphome-"
         return "%sus-bar" % page
 
+    # TODO: Move.isMember to a base
+    #   gs.group.member.viewlet.GroupMemberContentProvider class
     @Lazy
     def isMember(self):
-        retval = user_member_of_group(self.userInfo, self.context)
+        # --=mpj17=-- Cut 'n' paste software engineering from
+        # gs.group.member.viewlet.member.GroupMemberViewlet
+        retval = ((not self.loggedInUser.anonymous) and
+                    user_member_of_group(self.loggedInUser, self.groupInfo))
+        return retval
+
+    @Lazy
+    def vis(self):
+        retval = IGSGroupVisibility(self.groupInfo)
         return retval
 
     @Lazy
     def isPrivate(self):
         ''' Indicates if the group the UsBar is being displayed in is
         Private'''
-        vis = IGSGroupVisibility(self.groupInfo)
-        return vis.isPrivate
+        return self.vis.isPrivate
 
     @Lazy
     def isPublic(self):
         ''' Indicates if the group the UsBar is being displayed in is Public'''
-        vis = IGSGroupVisibility(self.groupInfo)
-        return vis.isPublic
+        return self.vis.isPublic
 
     def update(self):
         self.__updated = True
