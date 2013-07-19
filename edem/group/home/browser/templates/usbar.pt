@@ -4,8 +4,8 @@
       <li>
         <a tal:attributes="title string:Posts by ${member/name};
           href string:/s?t=0&amp;p=1&amp;a=${member/id}&amp;g=${view/groupInfo/id}">
-          <div tal:define="user member/user"
-            tal:replace="structure provider:groupserver.UserImage"/>
+          <div tal:define="user member/user; size string:63"
+            tal:replace="structure provider:groupserver.SquareUserImage"/>
         </a>
       </li>
     </tal:block>
