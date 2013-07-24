@@ -5,7 +5,7 @@
 
   <adapter
     for="zope.interface.Interface
-         gs.skin.ogn.edem.interfaces.IEDemLayer
+         gs.skin.ogn.edem.interfaces.IEDemSkin
          zope.interface.Interface"
     factory=".usbar.UsBar"
     provides="zope.contentprovider.interfaces.IContentProvider"
