@@ -29,7 +29,7 @@ setup(name='edem.group.home',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['edem', 'edem.group'], 
     include_package_data=True,
-    zip_safe=True,
+    zip_safe=False,
     install_requires=[
         'setuptools',
         'gs.skin.ogn.edem',
